@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 
+	namespace=""  命名空间，防止所有的包名不能重复
+	值的规则：接口的完全包名.接口名
+ -->
+<mapper namespace="dao.UserMapper">
+	<select id="query" resultType="User">
+		select * from smbms_user
+	</select>
+	<select id="login" resultType="int" parameterType="string">
+	SELECT count(*) FROM smbms_user WHERE userCode=#{userCode} AND userPassword=#{userPassword}
+	</select>
+	
+	<select id="billList" resultType="Bill" parameterType="string">
+	SELECT * FROM smbms_bill
+	 where 1=1
+	<if test="productName!=null and productName!=''">
+	and productName like CONCAT ('%',#{productName},'%')
+	</if>
+	<if test="isPayment!=null and isPayment!=0">
+	and isPayment like CONCAT ('%',#{isPayment},'%')
+	</if>
+	</select>
+	
+	<select id="billAddName" resultType="Bill" parameterType="string">
+	SELECT * FROM smbms_bill
+	where billCode=#{billCode}
+	</select>
+	
+	<select id="view" resultType="Bill" parameterType="string">
+	SELECT * FROM smbms_bill
+	where id=#{id}
+	</select>
+	
+	<delete id="billDel" parameterType="string">
+	DELETE FROM smbms_bill WHERE id= #{id}
+	</delete>
+	
+	
+	<insert id="billadd" parameterType="Bill">
+	INSERT INTO
+	smbms_bill(billCode,productName,productUnit,productCount,totalPrice,providerId,isPayment,creationDate)
+	VALUES(#{billCode},#{productName},#{productUnit},#{productCount},#{totalPrice},#{providerId},#{isPayment},NOW())
+	</insert>
+	
+	
+	<select id="providerList" resultType="Provider">
+	SELECT * FROM smbms_provider
+	</select>
+	
+	
+		<update id="uodate1" parameterType="Bill">
+	UPDATE smbms_bill SET billCode=#{billCode},productName=#{productName},productUnit=#{productUnit},productCount=#{productCount},totalPrice=#{totalPrice},isPayment=#{isPayment} WHERE id=#{id}
+	</update>
+	
+</mapper>
